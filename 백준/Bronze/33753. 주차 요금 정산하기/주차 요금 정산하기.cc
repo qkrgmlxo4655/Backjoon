@@ -9,8 +9,7 @@ int main() {
     t-=30;
     
     if(t >= 0) {
-        s = c * t/b;
-        
+        s = c * (int)(t/b);
         if(t%b != 0) s += c;
     }
     cout << a + s;    
