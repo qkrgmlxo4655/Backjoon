@@ -1,75 +1,58 @@
 #include <iostream>
-#include <utility>
-#include <vector>
-#include <queue>
+#include <tuple>
 #include <algorithm>
-
-
-#define INF 110000000
+#include <queue>
+#define M 22222
+#define INF 1000000000
 
 using namespace std;
 
-typedef pair<int, int> P;
-/*
-5 6
-1
-5 1 1
-1 2 2
-1 3 3
-2 3 4
-2 4 5
-3 4 6
-*/
+int V, E, K;
+typedef tuple<int,int> P;
+vector<P> MAP[M];
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int i, j;
-    int start;
-    int V, E;
+    int i,j;
     int u, v, w;
 
-    cin >> V >> E;
-    vector<int> D(V, INF), chk(V, 0);
-    vector<pair<int, int>> MAP[V];
-
-    cin >> start;
+    cin >> V >> E >> K;
 
     for(i=0 ; i<E ; i++) {
         cin >> u >> v >> w;
-        MAP[u-1].push_back(make_pair( (v-1), w ));
+        MAP[u].push_back({w,v});
     }
 
-    priority_queue<P, vector<P>, greater<P>> pq;
+    vector<int> via(V+1, INF);
+    priority_queue<P, vector<P>, greater<P>> Q;
+    via[K]=0;
+    Q.push({0, K});
 
-    D[start-1]=0;
-    pq.push({0, start-1});
-
-    while(!pq.empty()) {
-        int value = pq.top().first;
-        int node = pq.top().second;
-        pq.pop();
-        if(D[node] < value) continue;
+    while(!Q.empty()) {
+        auto [value, node] = Q.top(); Q.pop();
+        if(via[node] < value) continue;
 
         for(i=0 ; i<MAP[node].size() ; i++) {
-            int next_node = MAP[node][i].first;
-            int next_value = MAP[node][i].second;
-            int new_value = value + next_value;
+            int next_value=get<0>(MAP[node][i]), next_node=get<1>(MAP[node][i]);
 
-            if(new_value < D[next_node]) {
-                D[next_node] = new_value;
-                pq.push({new_value, next_node});
+            if(via[next_node] > value + next_value) {
+                next_value = value + next_value;
+                via[next_node] = next_value;
+                Q.push({next_value, next_node});
             }
         }
+
     }
 
-    for(j=0 ; j<V ; j++) {
-        if(D[j] == INF) {
-            cout << "INF" << "\n";
+    for(i=1 ; i<=V ; i++) {
+        if(via[i] == INF) {
+            cout << "INF";
         } else {
-            cout << D[j] << "\n";
+            cout << via[i];
         }
+        cout << "\n";
     }
 
     return 0;
