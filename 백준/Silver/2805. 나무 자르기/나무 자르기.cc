@@ -1,65 +1,61 @@
-/*
-    C++: Hello, World!
-*/
 #include <iostream>
 #include <algorithm>
-#include <vector>
+
 using namespace std;
 
-int main()
-{
+int N, M;
+long long arr[1111111];
+int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-
-    int n;
-    long long int m;
-    int x;
     int i;
-    vector<int> V;
-    cin >> n >> m;
 
-    for(i=0 ; i<n ; i++) {
-        cin >> x;
-        V.push_back(x);
+    cin >> N >> M;
+
+    for(i=0 ; i<N ; i++) {
+        cin >> arr[i];
     }
 
-    sort(V.begin(), V.end());
+    sort(arr, arr+N);
 
-    long long int l, r, mid, l_idx, r_idx, mid_idx;
-    long long int sum=0;
-    int result;
+    long long L, R, MID, l_idx, r_idx, m_idx, ans;
+    L=0; R=arr[N-1];
 
-    l=0; r=V[n-1];
-
-    while(l <= r) {
-        mid = (l+r)/2;
-        l_idx=0; r_idx=n-1;
-
-        while(l_idx <= r_idx) {
-            mid_idx = (l_idx + r_idx)/2;
-
-            if(V[mid_idx] >= mid) {
-                r_idx = mid_idx-1;
-            } else {
-                l_idx = mid_idx+1;
-            }
-        }
+    while(L <= R) {
+        MID = (L+R)/2;
+        l_idx=0; r_idx=N-1;
         
-        sum=0;
-        for(i=0 ; i<n ; i++) {
-            if(V[i] - mid > 0) {
-                sum += (V[i] - mid);
+        while(l_idx <= r_idx) {
+            m_idx = (l_idx + r_idx)/2;
+
+            if(arr[m_idx] >= MID) {
+                r_idx=m_idx-1;
+            } else {
+                l_idx=m_idx+1;
             }
         }
-        // cout << l << " " << mid << " " << r << " " << sum << endl;
-        if(sum >= m) {
-            result = mid;
-            l = mid+1;
+
+        if(l_idx > r_idx) {
+            m_idx = r_idx-1;
         } else {
-            r = mid-1;
+            m_idx = l_idx-1;
+        }
+
+        long long sum=0;
+        for(i=m_idx ; i<N ; i++) {
+            if(arr[i] - MID > 0) {
+                sum += (arr[i]-MID);
+            }
+        }
+
+        if(sum >= M) {
+            ans = MID;
+            L = MID+1;
+        } else {
+            R = MID-1;
         }
     }
-    cout << result << endl;
 
+    cout << ans;
     return 0;
 }
