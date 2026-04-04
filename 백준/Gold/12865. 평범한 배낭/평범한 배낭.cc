@@ -1,31 +1,39 @@
-#include <stdio.h>
-int arr[111111];
+#include <iostream>
+#include <vector>
+#include <tuple>
+
+using namespace std;
+
+int N, K;
+int knap[101][100010];
 
 int main() {
-    int n, k;
-    int w,v;
-    int i,j;
-    int max = -1;
-    scanf("%d%d", &n, &k);
-    arr[0] = -1;
-    for(i=0 ; i<n ; i++) {
-        scanf("%d%d", &w, &v);
-        
-        for(j=100000 ; j>=0 ; j--) {
-            if(arr[j] != 0) {
-                int t = j+w;
-                if(t > k) continue;
-                int value = arr[j] + v;
-                
-                if(arr[t] < value) {
-                    arr[t] = value;
-                }
-                
-                if(max < value) {
-                    max = value;
-                }
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int i, j;
+    int w, v;
+
+    cin >> N >> K;
+    vector<tuple<int,int>> V;
+
+    for(i=0 ; i<N ; i++) {
+        cin >> w >> v;
+        V.push_back({v, w});
+    }
+
+    for(i=1 ; i<=N ; i++) {
+        auto [v, w] = V[i-1];
+
+        for(j=1 ; j<=K ; j++) {
+            if(j < w) {
+                knap[i][j]=knap[i-1][j];
+            } else {
+                knap[i][j]=max(knap[i-1][j], knap[i-1][j-w] + v);
             }
         }
     }
-    printf("%d\n", max+1);
+
+    cout << knap[N][K];
+    return 0;
 }
